@@ -12,6 +12,7 @@ const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
 const userRouter = require('./routes/userRoutes')
 const categoryRouter = require('./routes/categoryRoutes')
+const recipeRouter = require('./routes/recipeRoutes')
 
 const app = express()
 
@@ -55,6 +56,8 @@ app.use(compression())
 app.use('/api/v1/users', userRouter)
 
 app.use('/api/v1/categories', categoryRouter)
+
+app.use('/api/v1/recipes', recipeRouter)
 
 // all stands for all http methods
 app.all('*', (req, res, next) => {
