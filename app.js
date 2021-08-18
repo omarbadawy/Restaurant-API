@@ -11,6 +11,7 @@ const compression = require('compression')
 const AppError = require('./utils/appError')
 const globalErrorHandler = require('./controllers/errorController')
 const userRouter = require('./routes/userRoutes')
+const categoryRouter = require('./routes/categoryRoutes')
 
 const app = express()
 
@@ -52,6 +53,8 @@ app.use(compression())
 
 // Mounting routers
 app.use('/api/v1/users', userRouter)
+
+app.use('/api/v1/categories', categoryRouter)
 
 // all stands for all http methods
 app.all('*', (req, res, next) => {
