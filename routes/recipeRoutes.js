@@ -5,6 +5,7 @@ const {
     getAllRecipes,
     updateRecipe,
     recipeSearch,
+    uploadRecipePhoto,
 } = require('../controllers/recipeController')
 const { protect, restrictTo } = require('../controllers/authController')
 
@@ -13,7 +14,7 @@ const router = express.Router()
 router
     .route('/')
     .get(getAllRecipes)
-    .post(protect, restrictTo('admin'), createRecipe)
+    .post(protect, restrictTo('admin'), uploadRecipePhoto, createRecipe)
 
 router.route('/search').get(recipeSearch)
 
