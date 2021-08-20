@@ -24,6 +24,6 @@ router.use(protect)
 // Restrict all the routes to admin after this
 router.use(restrictTo('admin'))
 
-router.route('/:id').patch(updateRecipe).delete(deleteRecipe)
+router.route('/:id').patch(uploadRecipePhoto, updateRecipe).delete(deleteRecipe)
 
 module.exports = router

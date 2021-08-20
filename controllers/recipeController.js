@@ -1,6 +1,7 @@
 const multer = require('multer')
 const slugify = require('slugify')
 const Recipe = require('../models/recipeModel')
+const Category = require('../models/categoryModel')
 const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const factory = require('./handlerFactory')
@@ -10,9 +11,17 @@ const multerStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, '../public/img/recipes'))
     },
-    filename: (req, file, cb) => {
-        const nameSlug = slugify(req.body.name, { lower: true })
-        cb(null, `recipe-${nameSlug}-${file.originalname}`)
+    filename: async (req, file, cb) => {
+        const ext = file.mimetype.split('/')[1]
+        let nameSlug
+
+        if (!req.body.name) {
+            recipe = await Recipe.findById(req.params.id)
+            nameSlug = slugify(recipe.name, { lower: true })
+        } else {
+            nameSlug = slugify(req.body.name, { lower: true })
+        }
+        cb(null, `recipe-${nameSlug}.${ext}`)
     },
 })
 
@@ -34,6 +43,17 @@ exports.uploadRecipePhoto = upload.single('imageCover')
 exports.getAllRecipes = factory.getAll(Recipe)
 
 exports.createRecipe = catchAsync(async (req, res, next) => {
+    if (req.body.category) {
+        const categoryExists = await Category.findOne({
+            name: req.body.category,
+        })
+        if (!categoryExists) {
+            return next(
+                new AppError('There is no category with that name', 400)
+            )
+        }
+    }
+
     const recipe = await Recipe.create({
         ...req.body,
         imageCover: `http://127.0.0.1:3000/img/recipes/${req.file.filename}`,
@@ -49,6 +69,21 @@ exports.createRecipe = catchAsync(async (req, res, next) => {
 
 exports.updateRecipe = catchAsync(async (req, res, next) => {
     const body = req.body
+
+    //console.log(req.body)
+    if (req.body.category) {
+        const categoryExists = await Category.findOne({
+            name: req.body.category,
+        })
+
+        //console.log(categoryExists)
+        if (!categoryExists) {
+            return next(
+                new AppError('There is no category with that name', 400)
+            )
+        }
+    }
+
     if (req.file)
         body.imageCover = `http://127.0.0.1:3000/img/recipes/${req.file.filename}`
 
@@ -60,6 +95,9 @@ exports.updateRecipe = catchAsync(async (req, res, next) => {
     if (!recipe) {
         return next(new AppError('No document Found With That ID', 404))
     }
+
+    recipe.slug = slugify(recipe.name, { lower: true })
+    await recipe.save()
 
     res.status(200).json({
         status: 'success',
