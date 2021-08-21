@@ -4,7 +4,8 @@
     "description": "Simple restaurant api",
     "main": "index.js",
     "scripts": {
-        "start": "nodemon server.js",
+        "start": "node server.js",
+        "dev": "nodemon server.js",
         "start:prod": "NODE_ENV=production nodemon server.js"
     },
     "repository": {
@@ -31,6 +32,9 @@
         "slugify": "^1.4.6",
         "validator": "^13.5.2",
         "xss-clean": "^0.1.1"
+    },
+    "engines": {
+        "node": "14.x"
     },
     "bugs": {
         "url": "https://github.com/omarbadawy/Restaurant-API/issues"
