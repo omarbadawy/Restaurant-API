@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
     },
     photo: {
         type: String,
-        default: 'http://127.0.0.1:3000/img/users/default.jpg',
+        default: 'https://panda-restaurant.herokuapp.com/img/users/default.jpg',
     },
     role: {
         type: String,

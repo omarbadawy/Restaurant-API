@@ -56,7 +56,7 @@ exports.createRecipe = catchAsync(async (req, res, next) => {
 
     const recipe = await Recipe.create({
         ...req.body,
-        imageCover: `http://127.0.0.1:3000/img/recipes/${req.file.filename}`,
+        imageCover: `https://panda-restaurant.herokuapp.com/img/recipes/${req.file.filename}`,
     })
 
     res.status(201).json({
@@ -85,7 +85,7 @@ exports.updateRecipe = catchAsync(async (req, res, next) => {
     }
 
     if (req.file)
-        body.imageCover = `http://127.0.0.1:3000/img/recipes/${req.file.filename}`
+        body.imageCover = `https://panda-restaurant.herokuapp.com/img/recipes/${req.file.filename}`
 
     const recipe = await Recipe.findByIdAndUpdate(req.params.id, body, {
         new: true,
