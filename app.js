@@ -62,6 +62,12 @@ app.use('/api/v1/recipes', recipeRouter)
 
 app.use('/api/v1/orders', orderRouter)
 
+app.get('/', (req, res) => {
+    res.status(404).json({
+        status: 'fail',
+        message: 'Not Found',
+    })
+})
 // all stands for all http methods
 app.all('*', (req, res, next) => {
     /*
