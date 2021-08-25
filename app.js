@@ -28,6 +28,14 @@ app.use(
     })
 )
 
+app.set('trust proxy', 1)
+
+app.use((req, res, next) => {
+    console.log('LOGGING THE IP ----------------**************---------------')
+    console.log(req.ip)
+    next()
+})
+
 const limiter = rateLimit({
     max: 100,
     windowMs: 60 * 60 * 1000,
