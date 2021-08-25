@@ -5,7 +5,7 @@ Simple Restaurant API.
 ## Documentation
 https://documenter.getpostman.com/view/13585955/TzzDJaUh
 
-## Apps built with that API
+## Apps based on this API
 
 Web App: 
 https://github.com/AhmedMaher015/foodOrderApp.git
