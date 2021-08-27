@@ -1,27 +1,42 @@
 const multer = require('multer')
 const slugify = require('slugify')
+const path = require('path')
+const cloudinary = require('cloudinary').v2
+const { CloudinaryStorage } = require('multer-storage-cloudinary')
 const Recipe = require('../models/recipeModel')
 const Category = require('../models/categoryModel')
 const catchAsync = require('./../utils/catchAsync')
 const AppError = require('./../utils/appError')
 const factory = require('./handlerFactory')
-const path = require('path')
 
-const multerStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, path.join(__dirname, '../public/img/recipes'))
-    },
-    filename: async (req, file, cb) => {
-        const ext = file.mimetype.split('/')[1]
-        let nameSlug
+// const multerStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, path.join(__dirname, '../public/img/recipes'))
+//     },
+//     filename: async (req, file, cb) => {
+//         const ext = file.mimetype.split('/')[1]
+//         let nameSlug
 
-        if (!req.body.name) {
-            recipe = await Recipe.findById(req.params.id)
-            nameSlug = slugify(recipe.name, { lower: true })
-        } else {
-            nameSlug = slugify(req.body.name, { lower: true })
-        }
-        cb(null, `recipe-${nameSlug}.${ext}`)
+//         if (!req.body.name) {
+//             recipe = await Recipe.findById(req.params.id)
+//             nameSlug = slugify(recipe.name, { lower: true })
+//         } else {
+//             nameSlug = slugify(req.body.name, { lower: true })
+//         }
+//         cb(null, `recipe-${nameSlug}.${ext}`)
+//     },
+// })
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET,
+})
+
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'panda',
     },
 })
 
@@ -34,7 +49,7 @@ const multerFilter = (req, file, cb) => {
 }
 
 const upload = multer({
-    storage: multerStorage,
+    storage: storage,
     fileFilter: multerFilter,
 })
 
@@ -56,7 +71,7 @@ exports.createRecipe = catchAsync(async (req, res, next) => {
 
     const recipe = await Recipe.create({
         ...req.body,
-        imageCover: `https://panda-restaurant.herokuapp.com/img/recipes/${req.file.filename}`,
+        imageCover: req.file.path,
     })
 
     res.status(201).json({
@@ -84,8 +99,7 @@ exports.updateRecipe = catchAsync(async (req, res, next) => {
         }
     }
 
-    if (req.file)
-        body.imageCover = `https://panda-restaurant.herokuapp.com/img/recipes/${req.file.filename}`
+    if (req.file) body.imageCover = req.file.path
 
     const recipe = await Recipe.findByIdAndUpdate(req.params.id, body, {
         new: true,
