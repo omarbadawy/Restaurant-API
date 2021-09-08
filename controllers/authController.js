@@ -82,9 +82,7 @@ exports.protect = catchAsync(async (req, res, next) => {
         )
     }
     // 2) Verification token
-    console.log('before decoded')
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
-    console.log('after decoded', decoded)
     // 3) Check if user still exists
     const currentUser = await User.findById(decoded.id)
     if (!currentUser) {
@@ -106,18 +104,13 @@ exports.protect = catchAsync(async (req, res, next) => {
         )
     }
 
-    console.log('end of protect')
-    console.log('current user', currentUser)
     // Grant Access To A Protected Route
     req.user = currentUser
     next()
 })
 
 exports.restrictTo = (...roles) => {
-    return catchAsync(async (req, res, next) => {
-        console.log('roles', roles)
-        console.log('user role', req.user.role)
-
+    return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
             console.log('return from restrict')
 
@@ -128,9 +121,8 @@ exports.restrictTo = (...roles) => {
                 )
             )
         }
-        console.log('end of restrict')
         next()
-    })
+    }
 }
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {

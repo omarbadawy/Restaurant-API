@@ -39,7 +39,6 @@ const sendErrorProd = (err, req, res) => {
     // API
     if (req.originalUrl.startsWith('/api')) {
         // Operational, trusted error: send message to the client
-        console.log(err)
         if (err.isOperational) {
             return res.status(err.statusCode).json({
                 status: err.status,
