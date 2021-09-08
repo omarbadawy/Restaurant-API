@@ -114,7 +114,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 })
 
 exports.restrictTo = (...roles) => {
-    return (req, res, next) => {
+    return catchAsync(async (req, res, next) => {
         console.log('roles', roles)
         console.log('user role', req.user.role)
 
@@ -130,7 +130,7 @@ exports.restrictTo = (...roles) => {
         }
         console.log('end of restrict')
         next()
-    }
+    })
 }
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
