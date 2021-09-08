@@ -68,6 +68,10 @@ exports.createRecipe = catchAsync(async (req, res, next) => {
             )
         }
     }
+    console.log('reached here')
+    console.log('body', req.body)
+    console.log('-----------')
+    console.log('file', req.file)
 
     const recipe = await Recipe.create({
         ...req.body,
