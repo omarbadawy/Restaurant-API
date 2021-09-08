@@ -107,7 +107,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     }
 
     console.log('end of protect')
-
+    console.log('current user', currentUser)
     // Grant Access To A Protected Route
     req.user = currentUser
     next()
@@ -115,7 +115,12 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
+        console.log('roles', roles)
+        console.log('user role', req.user.role)
+
         if (!roles.includes(req.user.role)) {
+            console.log('return from restrict')
+
             return next(
                 new AppError(
                     "You don't have permission to perform this action!",
