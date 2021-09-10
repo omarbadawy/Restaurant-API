@@ -54,6 +54,7 @@ orderSchema.methods.orderedAfterFiveMins = function () {
     console.log('********')
     console.log(Date.now())
     console.log(msToMins(Date.now() - createdAtTimestamp))
+    console.log(new Date(), this.createdAt)
     if (msToMins(Date.now() - createdAtTimestamp) >= 5) {
         return true
     }
