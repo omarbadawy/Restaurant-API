@@ -57,6 +57,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
         customerEmail: req.user.email,
         customerAddress,
         customerPhoneNumber,
+        createdAt: Date.now(),
     })
 
     res.status(201).json({
