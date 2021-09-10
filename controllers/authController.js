@@ -112,15 +112,12 @@ exports.protect = catchAsync(async (req, res, next) => {
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
         if (!roles.includes(req.user.role)) {
-            console.log('log: ending request')
-            return res.status(200).end()
-            console.log('log: ended request')
-            // return next(
-            //     new AppError(
-            //         "You don't have permission to perform this action!",
-            //         403
-            //     )
-            // )
+            return next(
+                new AppError(
+                    "You don't have permission to perform this action!",
+                    403
+                )
+            )
         }
         next()
     }

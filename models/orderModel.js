@@ -43,6 +43,7 @@ const orderSchema = new mongoose.Schema({
     },
     createdAt: {
         type: Date,
+        //default: () => Date.now() // first time only
     },
 })
 
@@ -51,9 +52,7 @@ orderSchema.methods.orderedAfterFiveMins = function () {
     console.log('********')
     console.log(createdAtTimestamp)
     console.log('********')
-    console.log(new Date(createdAtTimestamp))
     console.log(msToMins(Date.now() - createdAtTimestamp))
-    console.log(new Date(), this.createdAt)
     if (msToMins(Date.now() - createdAtTimestamp) >= 5) {
         return true
     }
