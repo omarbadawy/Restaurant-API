@@ -5,25 +5,21 @@ const {
     getAllRecipes,
     updateRecipe,
     recipeSearch,
-    uploadRecipePhoto,
 } = require('../controllers/recipeController')
 const { protect, restrictTo } = require('../controllers/authController')
+const { multerUploads } = require('../utils/multer')
 
 const router = express.Router()
 
 router
     .route('/')
     .get(getAllRecipes)
-    .post(protect, restrictTo('admin'), uploadRecipePhoto, createRecipe)
+    .post(multerUploads, protect, restrictTo('admin'), createRecipe)
+
+router
+    .route('/:id')
+    .patch(multerUploads, protect, restrictTo('admin'), updateRecipe)
+    .delete(deleteRecipe)
 
 router.route('/search').get(recipeSearch)
-
-// Protect all the routes after this
-router.use(protect)
-
-// Restrict all the routes to admin after this
-router.use(restrictTo('admin'))
-
-router.route('/:id').patch(uploadRecipePhoto, updateRecipe).delete(deleteRecipe)
-
 module.exports = router
