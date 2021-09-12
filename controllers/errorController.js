@@ -25,6 +25,8 @@ const handleJWTError = () =>
 const handleJWTExpiredError = () =>
     new AppError('Your token has expired! please log in again.', 401)
 
+const handleFileTooLarge = () => new AppError('File is too large', 400)
+
 const sendErrorDev = (err, req, res) => {
     // Api
     return res.status(err.statusCode).json({
@@ -74,6 +76,8 @@ module.exports = (err, req, res, next) => {
             error = handleValidationErrorDB(error)
         if (error.name === 'JsonWebTokenError') error = handleJWTError()
         if (error.name === 'TokenExpiredError') error = handleJWTExpiredError()
+        if (error.name === 'MulterError' && error.message.includes('too large'))
+            error = handleFileTooLarge()
 
         sendErrorProd(error, req, res)
     }

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
+const { cloudinaryConfig } = require('./utils/cloudinary')
 
 process.on('uncaughtException', (err) => {
     console.log('UNCAUGHT EXCEPTION!!')
@@ -20,6 +21,8 @@ mongoose
         useUnifiedTopology: true,
     })
     .then(() => console.log('DB connection successful!'))
+
+cloudinaryConfig()
 
 const port = process.env.PORT || 3000
 

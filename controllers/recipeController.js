@@ -1,8 +1,10 @@
 const multer = require('multer')
 const slugify = require('slugify')
 const path = require('path')
-const cloudinary = require('cloudinary').v2
-const { CloudinaryStorage } = require('multer-storage-cloudinary')
+//const cloudinary = require('cloudinary').v2
+//const { CloudinaryStorage } = require('multer-storage-cloudinary')
+const { uploader } = require('../utils/cloudinary')
+const { dataUri } = require('../utils/multer')
 const Recipe = require('../models/recipeModel')
 const Category = require('../models/categoryModel')
 const catchAsync = require('./../utils/catchAsync')
@@ -27,33 +29,33 @@ const factory = require('./handlerFactory')
 //     },
 // })
 
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_API_SECRET,
-})
+// cloudinary.config({
+//     cloud_name: process.env.CLOUD_NAME,
+//     api_key: process.env.CLOUD_API_KEY,
+//     api_secret: process.env.CLOUD_API_SECRET,
+// })
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: 'panda',
-    },
-})
+// const storage = new CloudinaryStorage({
+//     cloudinary: cloudinary,
+//     params: {
+//         folder: 'panda',
+//     },
+// })
 
-const multerFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image')) {
-        cb(null, true)
-    } else {
-        cb(new AppError('Not an image, Please upload only images', 400))
-    }
-}
+// const multerFilter = (req, file, cb) => {
+//     if (file.mimetype.startsWith('image')) {
+//         cb(null, true)
+//     } else {
+//         cb(new AppError('Not an image, Please upload only images', 400))
+//     }
+// }
 
-const upload = multer({
-    storage: storage,
-    fileFilter: multerFilter,
-})
+// const upload = multer({
+//     storage: storage,
+//     fileFilter: multerFilter,
+// })
 
-exports.uploadRecipePhoto = upload.single('imageCover')
+// exports.uploadRecipePhoto = upload.single('imageCover')
 
 exports.getAllRecipes = factory.getAll(Recipe)
 
@@ -69,9 +71,18 @@ exports.createRecipe = catchAsync(async (req, res, next) => {
         }
     }
 
+    if (!req.file) {
+        return next(new AppError('Please attach ImageCover', 400))
+    }
+
+    const file = dataUri(req).content
+
+    const result = await uploader.upload(file, { folder: 'panda' })
+    const image = result.secure_url
+
     const recipe = await Recipe.create({
         ...req.body,
-        imageCover: req.file.path,
+        imageCover: image,
     })
 
     res.status(201).json({
@@ -99,7 +110,12 @@ exports.updateRecipe = catchAsync(async (req, res, next) => {
         }
     }
 
-    if (req.file) body.imageCover = req.file.path
+    if (req.file) {
+        const file = dataUri(req).content
+        const result = await uploader.upload(file, { folder: 'panda' })
+        const image = result.secure_url
+        body.imageCover = image
+    }
 
     const recipe = await Recipe.findByIdAndUpdate(req.params.id, body, {
         new: true,
