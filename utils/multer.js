@@ -2,6 +2,7 @@ const multer = require('multer')
 const Datauri = require('datauri')
 const path = require('path')
 const DataURIParser = require('datauri/parser')
+const AppError = require('../utils/appError')
 
 const storage = multer.memoryStorage()
 
