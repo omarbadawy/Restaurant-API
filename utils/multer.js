@@ -10,7 +10,6 @@ const multerFilter = (req, file, cb) => {
     if (file.mimetype.startsWith('image')) {
         cb(null, true)
     } else {
-        console.log(file)
         cb(new AppError('Not an image, Please upload only images', 400))
     }
 }

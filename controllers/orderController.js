@@ -68,6 +68,8 @@ exports.createOrder = catchAsync(async (req, res, next) => {
 
 exports.getAllOrders = factory.getAll(Order)
 
+exports.deleteOrder = factory.deleteOne(Order)
+
 exports.getUserOrders = catchAsync(async (req, res, next) => {
     const orders = await Order.find({ customerId: req.user._id })
 
