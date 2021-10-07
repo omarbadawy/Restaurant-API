@@ -137,9 +137,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
     // Send it back as an email
 
     try {
-        const resetURL = `${req.protocol}://${req.get(
-            'host'
-        )}/api/v1/users/resetPassword/${resetToken}`
+        const resetURL = `https://food-order-react-app-eight.vercel.app/reset-password?token=${resetToken}`
 
         await new Email(user, resetURL).sendPasswordReset()
 

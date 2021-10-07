@@ -14,7 +14,6 @@ module.exports = class Email {
 
     async sendPasswordReset() {
         const html = emailTemplate(this.firstName, this.url)
-        console.log(process.env.SENDGRID_API_KEY)
         sgMail.setApiKey(process.env.SENDGRID_API_KEY)
         // 2) Define email options
         const msg = {
