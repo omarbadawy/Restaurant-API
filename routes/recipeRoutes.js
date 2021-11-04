@@ -19,7 +19,7 @@ router
 router
     .route('/:id')
     .patch(multerUploads, protect, restrictTo('admin'), updateRecipe)
-    .delete(deleteRecipe)
+    .delete(protect, restrictTo('admin'), deleteRecipe)
 
 router.route('/search').get(recipeSearch)
 module.exports = router
