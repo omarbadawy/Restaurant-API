@@ -75,7 +75,7 @@ exports.getAll = (Model) =>
             req.query
         ).filter()
 
-        const features = new APIFeatures(Model.find(filter), req.query)
+        const features = new APIFeatures(Model.find(), req.query)
             .filter()
             .sort()
             .limitFields()
