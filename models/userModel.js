@@ -61,7 +61,6 @@ const userSchema = new mongoose.Schema({
     active: {
         type: Boolean,
         default: true,
-        select: false,
     },
 })
 
@@ -82,11 +81,11 @@ userSchema.pre('save', function (next) {
 })
 
 // Query middleware  for any Query starts with find
-userSchema.pre(/^find/, function (next) {
-    // "this" points to the current query
-    this.find({ active: { $ne: false } })
-    next()
-})
+// userSchema.pre(/^find/, function (next) {
+//     // "this" points to the current query
+//     this.find({ active: { $ne: false } })
+//     next()
+// })
 
 // Defining a method available to all documents to compare password to the hashed one
 userSchema.methods.correctPassword = async function (
